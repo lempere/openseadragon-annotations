@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <div id = "viewer" style="height: 1000px;"></div>
+</body>
+<script type="text/javascript" src="../dist/openseadragon.js"></script>
+<script type="text/javascript" src="../dist/openseadragon-annotations.js"></script>
+<script type="text/javascript" >
+    const viewer = OpenSeadragon({
+        id: 'viewer',
+        prefixUrl: "../dist/img/",
+        showNavigator:  true,
+        tileSources: {
+            Image: {
+                xmlns: 'http://schemas.microsoft.com/deepzoom/2008',
+                Url: 'http://cache.zoomhub.net/content/STK4_files/',
+                Format: 'jpg',
+                Overlap: 1,
+                TileSize: 254,
+                ServerFormat: 'Default',
+                Size: {
+                    Height: 21952,
+                    Width: 30000
+                }
+            }
+        }
+    });
+const annotations = new OpenSeadragon.Annotations({ viewer });
+
+
+</script>
+</html>

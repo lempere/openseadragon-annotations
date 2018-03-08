@@ -15,18 +15,37 @@ const reactToGeneralAction = (model) =>
       case 'PRESS':
         if (model.mode === 'DRAW') {
           model.activityInProgress = true;
-          model.annotations.push([
-            'path',
-            {
-              fill: 'none',
-              d: `M${action.x} ${action.y}`,
-              stroke: 'red',
-              'stroke-width': 3,
-              'stroke-linejoin': 'round',
-              'stroke-linecap': 'round',
-              'vector-effect': 'non-scaling-stroke',
-            },
-          ]);
+          switch (model.type) {
+          case 'LINE':
+            model.annotations.push([
+              'line',
+              {
+                x1: `${action.x}`,
+                y1: `${action.y}`,
+                x2: `${action.x}`,
+                y2: `${action.y}`,
+                stroke: 'blue',
+                'stroke-width': 3,
+                'vector-effect': 'non-scaling-stroke',
+                
+              },
+            ]);
+            break;
+          case 'PATH':
+            model.annotations.push([
+              'path',
+              {
+                fill: 'none',
+                d: `M${action.x} ${action.y}`,
+                stroke: 'red',
+                'stroke-width': 3,
+                'stroke-linejoin': 'round',
+                'stroke-linecap': 'round',
+                'vector-effect': 'non-scaling-stroke',
+              },
+            ]);
+            break;
+          }
         }
         break;
 
@@ -42,6 +61,9 @@ const reactToGeneralAction = (model) =>
           const lastAnnotation = annotations[annotations.length - 1];
           if (lastAnnotation && lastAnnotation[0] === 'path') {
             lastAnnotation[1].d += ` L${action.x} ${action.y}`;
+          } else if (lastAnnotation && lastAnnotation[0] === 'line') {
+            lastAnnotation[1].x2 = `${action.x}`;
+            lastAnnotation[1].y2 = `${action.y}`;
           }
         }
         break;

@@ -4,6 +4,7 @@ export default () =>
   Object.assign(Object.create(EventSource.prototype), {
     events: {},
     mode: 'MOVE',
+    type: 'LINE',
     zoom: 1,
     width: 0,
     height: 0,
