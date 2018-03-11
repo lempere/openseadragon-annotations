@@ -14,6 +14,12 @@ const reactToGeneralAction = (model) =>
 
       case 'PRESS':
         if (model.mode === 'DRAW') {
+          if (model.annotationname !== '') {
+            const i = model.getAnnotationsIdxByName(model.annotationname);
+            if (i >= 0) {
+              model.annotations.splice(i, 1);
+            }
+          }
           model.activityInProgress = true;
           switch (model.annotationtype) {
           case 'LINE':
@@ -28,7 +34,7 @@ const reactToGeneralAction = (model) =>
                 'stroke-width': `${model.annotationlinewidth}`,
                 'vector-effect': 'non-scaling-stroke',
                 
-              },
+              }, `${model.annotationname}`, 
             ]);
             break;
           case 'PATH':
@@ -42,7 +48,7 @@ const reactToGeneralAction = (model) =>
                 'stroke-linejoin': 'round',
                 'stroke-linecap': 'round',
                 'vector-effect': 'non-scaling-stroke',
-              },
+              }, `${model.annotationname}`, 
             ]);
             break;
           }

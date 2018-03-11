@@ -42,3 +42,12 @@ The viewer screen will have an additional set of icons at the bottom-left side, 
 ### Supported Browsers
 
 The plugin works on Chrome, Firefox, Opera and Safari. Internet Explorer 9 and above and Microsoft Edge are also supported, but performance is worse in them due to their lack of support for the `vector-effect` SVG attribute.
+
+### Annotation properties
+
+Annotation properties can be set from javascript in the page
+
+`annotations.model.annotationtype` : PATH|LINE  
+`annotations.model.annotationcolor` :  
+`annotations.model.annotationlinewidth` :  line width in pixels, does not scale with zoom.  
+`annotations.model.annotationname` : Only 1 annotation with the same name can be in the annotationlist, leave empty to allow multiple successive annotations.  
