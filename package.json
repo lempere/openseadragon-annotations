@@ -87,6 +87,6 @@
     "webpack-dev-server": "^2.6.1"
   },
   "peerDependencies": {
-    "openseadragon": "^2.2.1"
+    "openseadragon": "^2.3.1"
   }
 }

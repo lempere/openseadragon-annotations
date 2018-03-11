@@ -1,11 +1,35 @@
 <!DOCTYPE html>
 <html>
+    <title>openseadragon-annotations Test</title>
 <body>
+    <div>
+        <em>Type:</em>
+        <input type="radio", name="type" value="LINE">Line
+        <input type="radio", name="type" value="PATH">Path<br>
+    </div>
+    <hr>
+    <div>
+        <em>Color:</em>
+        <input type="radio", name="color" value="red">Red
+        <input type="radio", name="color" value="blue">Blue<br>
+    </div>
+    <hr>
+    <div>
+        <em>Linewidth:</em>
+        <input type="radio", name="linewidth" value="2">2
+        <input type="radio", name="linewidth" value="3">3
+        <input type="radio", name="linewidth" value="5">5<br>
+    </div>
+    <hr>
     <div id = "viewer" style="height: 1000px;"></div>
+    <hr>
 </body>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script type="text/javascript" src="../dist/openseadragon.js"></script>
 <script type="text/javascript" src="../dist/openseadragon-annotations.js"></script>
 <script type="text/javascript" >
+$(document).ready(function() {
     const viewer = OpenSeadragon({
         id: 'viewer',
         prefixUrl: "../dist/img/",
@@ -25,8 +49,24 @@
             }
         }
     });
-const annotations = new OpenSeadragon.Annotations({ viewer });
-
+    const annotations = new OpenSeadragon.Annotations({ viewer });
+    $('input[type=radio]').change(function() {
+        var option =$(this).val();
+        var prop =$(this).attr('name')
+        switch (prop) {
+            case 'type':
+                annotations.model.annotationtype = option;
+            break;
+            case 'color':
+                annotations.model.annotationcolor = option;
+            break;
+            case 'linewidth':
+                annotations.model.annotationlinewidth = option;
+            break;
+        };
+    });
+    
+});
 
 </script>
 </html>

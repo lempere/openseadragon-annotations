@@ -15,7 +15,7 @@ const reactToGeneralAction = (model) =>
       case 'PRESS':
         if (model.mode === 'DRAW') {
           model.activityInProgress = true;
-          switch (model.type) {
+          switch (model.annotationtype) {
           case 'LINE':
             model.annotations.push([
               'line',
@@ -24,8 +24,8 @@ const reactToGeneralAction = (model) =>
                 y1: `${action.y}`,
                 x2: `${action.x}`,
                 y2: `${action.y}`,
-                stroke: 'blue',
-                'stroke-width': 3,
+                stroke: `${model.annotationcolor}`,
+                'stroke-width': `${model.annotationlinewidth}`,
                 'vector-effect': 'non-scaling-stroke',
                 
               },
@@ -37,8 +37,8 @@ const reactToGeneralAction = (model) =>
               {
                 fill: 'none',
                 d: `M${action.x} ${action.y}`,
-                stroke: 'red',
-                'stroke-width': 3,
+                stroke: `${model.annotationcolor}`,
+                'stroke-width': `${model.annotationlinewidth}`,
                 'stroke-linejoin': 'round',
                 'stroke-linecap': 'round',
                 'vector-effect': 'non-scaling-stroke',
