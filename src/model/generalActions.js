@@ -14,6 +14,7 @@ const reactToGeneralAction = (model) =>
 
       case 'PRESS':
         if (model.mode === 'DRAW') {
+          // Remove existing annotation if it has same non-empty name
           if (model.annotationname !== '') {
             const i = model.getAnnotationsIdxByName(model.annotationname);
             if (i >= 0) {
@@ -22,35 +23,36 @@ const reactToGeneralAction = (model) =>
           }
           model.activityInProgress = true;
           switch (model.annotationtype) {
-          case 'LINE':
-            model.annotations.push([
-              'line',
-              {
-                x1: `${action.x}`,
-                y1: `${action.y}`,
-                x2: `${action.x}`,
-                y2: `${action.y}`,
-                stroke: `${model.annotationcolor}`,
-                'stroke-width': `${model.annotationlinewidth}`,
-                'vector-effect': 'non-scaling-stroke',
-                
-              }, `${model.annotationname}`, 
-            ]);
-            break;
-          case 'PATH':
-            model.annotations.push([
-              'path',
-              {
-                fill: 'none',
-                d: `M${action.x} ${action.y}`,
-                stroke: `${model.annotationcolor}`,
-                'stroke-width': `${model.annotationlinewidth}`,
-                'stroke-linejoin': 'round',
-                'stroke-linecap': 'round',
-                'vector-effect': 'non-scaling-stroke',
-              }, `${model.annotationname}`, 
-            ]);
-            break;
+            case 'LINE':
+              model.annotations.push([
+                'line',
+                {
+                  x1: `${action.x}`,
+                  y1: `${action.y}`,
+                  x2: `${action.x}`,
+                  y2: `${action.y}`,
+                  stroke: `${model.annotationcolor}`,
+                  'stroke-width': `${model.annotationlinewidth}`,
+                  'vector-effect': 'non-scaling-stroke',
+                }, `${model.annotationname}`,
+              ]);
+              break;
+            case 'PATH':
+              model.annotations.push([
+                'path',
+                {
+                  fill: 'none',
+                  d: `M${action.x} ${action.y}`,
+                  stroke: `${model.annotationcolor}`,
+                  'stroke-width': `${model.annotationlinewidth}`,
+                  'stroke-linejoin': 'round',
+                  'stroke-linecap': 'round',
+                  'vector-effect': 'non-scaling-stroke',
+                }, `${model.annotationname}`,
+              ]);
+              break;
+            default:
+              break;
           }
         }
         break;
@@ -103,4 +105,3 @@ const reactToGeneralAction = (model) =>
   };
 
 export default reactToGeneralAction;
-

@@ -40,7 +40,7 @@ class Overlay extends Component {
   onMouseMove = (e) => {
     if (this.state.mode !== 'MOVE') {
       e.stopPropagation();
-      this.props.dispatch({ type: 'MOVE', ...this.calculateCoords(e) })
+      this.props.dispatch({ type: 'MOVE', ...this.calculateCoords(e) });
     }
   };
 

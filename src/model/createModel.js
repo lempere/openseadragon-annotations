@@ -15,21 +15,21 @@ export default () =>
     annotationname: '',
 
     getAnnotationsIdxByName(annotationname) {
-      var i = 0;
-      while ( i < this.annotations.length) {
+      let i = 0;
+      while (i < this.annotations.length) {
         if (annotationname === this.annotations[i][2]) {
-          return(i);
+          return (i);
         }
-        i++;
+        i += 1;
       }
-      return(-1)
+      return (-1);
     },
-      
+
     getAnnotationByName(annotationname) {
-      const i = getAnnotationsIdxByName(annotationname);
+      const i = this.getAnnotationsIdxByName(annotationname);
       if (i >= 0) {
-        return(this.annotations[i]);
-      } 
-      return(null);
+        return (this.annotations[i]);
+      }
+      return (null);
     },
   });
