@@ -5,28 +5,33 @@
     <h3>Test page for openseadragon-annotations</h3>
     <div>
         <em>annotationtype:</em>
-        <input type="radio", name="type" value="LINE">Line
-        <input type="radio", name="type" value="PATH">Path<br>
+        <input type="radio" name="type" value="LINE">Line
+        <input type="radio" name="type" value="PATH">Path<br>
     </div>
     <hr>
     <div>
         <em>annotationcolor:</em>
-        <input type="radio", name="color" value="red">Red
-        <input type="radio", name="color" value="blue">Blue<br>
+        <input type="radio" name="color" value="red">Red
+        <input type="radio" name="color" value="blue">Blue<br>
     </div>
     <hr>
     <div>
         <em>annotationlinewidth:</em>
-        <input type="radio", name="linewidth" value="2">2
-        <input type="radio", name="linewidth" value="3">3
-        <input type="radio", name="linewidth" value="5">5<br>
+        <input type="radio" name="linewidth" value="2">2
+        <input type="radio" name="linewidth" value="3">3
+        <input type="radio" name="linewidth" value="5">5<br>
     </div>
     <hr>
     <div>
         <em>annotationname:</em>
-        <input type="radio", name="name" value="">""
-        <input type="radio", name="name" value="annot1">"annot1"
-        <input type="radio", name="name" value="annot2">"annot2"  Only one annotation can exist for a name. Multiple for empty string<br>
+        <input type="radio" name="name" value="">""
+        <input type="radio" name="name" value="annot1">"annot1"
+        <input type="radio" name="name" value="annot2">"annot2"  Only one annotation can exist for a name. Multiple for empty string<br>
+    </div>
+    <hr>
+    <div>
+        <em>annotationactive</em>
+        <input type="checkbox" name="active" checked>Enable annotation buttons<br>
     </div>
     <hr>
     <div id = "viewer" style="height: 1000px;"></div>
@@ -73,6 +78,15 @@ $(document).ready(function() {
             break;
             case 'name':
                 annotations.model.annotationname = option;
+            break;
+        };
+    });
+    $('input[type=checkbox]').change(function() {
+        var option =$(this).is(':checked');
+        var prop =$(this).attr('name')
+        switch (prop) {
+            case 'active':
+                annotations.setEnable(option);
             break;
         };
     });

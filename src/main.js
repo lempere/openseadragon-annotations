@@ -8,6 +8,7 @@ import createModel from './model/createModel';
 
 const annotationsPrototype = {
   onOpen() {
+    this.model.isactive = true;
     this.overlay = render(h(Overlay, { dispatch: this.dispatch, model: this.model }));
     const homeBounds = this.viewer.world.getHomeBounds();
     this.viewer.addOverlay(this.overlay, new Rect(0, 0, homeBounds.width, homeBounds.height));
@@ -46,6 +47,17 @@ const annotationsPrototype = {
 
   getStatus() {
     return { active: !!this.overlay };
+  },
+
+  setEnable(active) {
+    this.model.isactive = !!active;
+    for (let index = 0; index < this.controls.length; index += 1) {
+      if (this.model.isactive) {
+        this.controls[index].btn.enable();
+      } else {
+        this.controls[index].btn.disable();
+      }
+    }
   },
 };
 

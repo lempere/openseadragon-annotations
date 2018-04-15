@@ -13,7 +13,7 @@ const reactToGeneralAction = (model) =>
         break;
 
       case 'PRESS':
-        if (model.mode === 'DRAW') {
+        if (model.mode === 'DRAW' && model.isactive) {
           // Remove existing annotation if it has same non-empty name
           if (model.annotationname !== '') {
             const i = model.getAnnotationsIdxByName(model.annotationname);

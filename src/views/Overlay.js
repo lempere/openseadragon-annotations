@@ -31,28 +31,28 @@ class Overlay extends Component {
   }
 
   onMouseDown = (e) => {
-    if (this.state.mode !== 'MOVE') {
+    if (this.state.mode !== 'MOVE' && this.props.model.isactive) {
       e.stopPropagation();
       this.props.dispatch({ type: 'PRESS', ...this.calculateCoords(e) });
     }
   };
 
   onMouseMove = (e) => {
-    if (this.state.mode !== 'MOVE') {
+    if (this.state.mode !== 'MOVE' && this.props.model.isactive) {
       e.stopPropagation();
       this.props.dispatch({ type: 'MOVE', ...this.calculateCoords(e) });
     }
   };
 
   onMouseUp = (e) => {
-    if (this.state.mode !== 'MOVE') {
+    if (this.state.mode !== 'MOVE' && this.props.model.isactive) {
       e.stopPropagation();
       this.props.dispatch({ type: 'RELEASE' });
     }
   };
 
   onMouseLeave = (e) => {
-    if (this.state.mode !== 'MOVE') {
+    if (this.state.mode !== 'MOVE' && this.props.model.isactive) {
       e.stopPropagation();
       this.props.dispatch({ type: 'LEAVE_CANVAS' });
     }
