@@ -57,16 +57,17 @@ const reactToGeneralAction = (model) =>
         }
         break;
 
+      case 'LEAVE_CANVAS':
       case 'RELEASE':
-        if (model.mode === 'DRAW') {
+        if (model.mode === 'DRAW' && model.activityInProgress === true) {
+          model.raiseEvent('ANNOTATIONRELEASE_EVENT', model.annotations[model.annotations.length - 1]);
           model.activityInProgress = false;
         }
         break;
 
       case 'MOVE':
         if (model.mode === 'DRAW' && model.activityInProgress === true) {
-          const annotations = model.annotations;
-          const lastAnnotation = annotations[annotations.length - 1];
+          const lastAnnotation = model.annotations[model.annotations.length - 1];
           if (lastAnnotation && lastAnnotation[0] === 'path') {
             lastAnnotation[1].d += ` L${action.x} ${action.y}`;
           } else if (lastAnnotation && lastAnnotation[0] === 'line') {
@@ -83,12 +84,6 @@ const reactToGeneralAction = (model) =>
 
       case 'ZOOM_UPDATE':
         model.zoom = action.zoom;
-        break;
-
-      case 'LEAVE_CANVAS':
-        if (model.mode === 'DRAW') {
-          model.activityInProgress = false;
-        }
         break;
 
       case 'INITIALIZE':

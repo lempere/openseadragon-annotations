@@ -59,6 +59,37 @@ const annotationsPrototype = {
       }
     }
   },
+
+  getLength(annotation) {
+    let linelength = 0;
+    const homeBounds = this.viewer.source.dimensions;
+    const ImageWidthInPercent = homeBounds.x / 100;
+    const ImageHeightInPercent = homeBounds.y / 100;
+    switch (annotation[0]) {
+      case 'line': {
+        const dx = ((annotation[1].x2 - annotation[1].x1) * ImageWidthInPercent);
+        const dy = ((annotation[1].y2 - annotation[1].y1) * ImageHeightInPercent);
+        linelength = Math.sqrt((dx * dx) + (dy * dy));
+        break;
+      }
+      case 'path': {
+        // remove first 'M'
+        const points = annotation[1].d.substring(1).split(' L');
+        if (points.length > 1) {
+          for (let index = 1; index < points.length; index += 1) {
+            const p1 = points[index - 1].split(' ');
+            const p2 = points[index].split(' ');
+            const dx = ((p1[0] - p2[0]) * ImageWidthInPercent);
+            const dy = ((p1[1] - p2[1]) * ImageHeightInPercent);
+            linelength += Math.sqrt((dx * dx) + (dy * dy));
+          }
+        }
+        break;
+      }
+      default:
+    }
+    return (linelength);
+  },
 };
 
 export default ({ viewer }) => {

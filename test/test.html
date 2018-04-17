@@ -34,6 +34,9 @@
         <input type="checkbox" name="active" checked>Enable annotation buttons<br>
     </div>
     <hr>
+    <em>annotation length</em>
+    <div id="AnnotationLength"></div>
+    <hr>
     <div id = "viewer" style="height: 1000px;"></div>
     <hr>
 </body>
@@ -63,6 +66,11 @@ $(document).ready(function() {
         }
     });
     const annotations = new OpenSeadragon.Annotations({ viewer });
+    annotations.model.addHandler('ANNOTATIONRELEASE_EVENT', (annotation) => {
+        const l = annotations.getLength(annotation);
+        document.getElementById("AnnotationLength").textContent = l 
+    });
+
     $('input[type=radio]').change(function() {
         var option =$(this).val();
         var prop =$(this).attr('name')

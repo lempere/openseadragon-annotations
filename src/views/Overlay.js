@@ -6,9 +6,10 @@ class Overlay extends Component {
     // In Internet Explorer and Edge we can not rely on vector-effect="non-scaling-stroke"
     // to maintain constant the witdh of the SVG strokes during zoom
     const vectorEffectNotAvailable = document.documentElement.style.vectorEffect === undefined;
-    const standardRender = (el) => h(...el);
+    // Make sure only first 2 elements of array are used, later elements are used for name
+    const standardRender = (el) => h(...el.slice(0, 2));
     const renderForIeAndEdge = (el, model) => {
-      const newEl = el;
+      const newEl = el.slice(0, 2);
       const baseWidth = 3;
       let percentWidth;
       const totalImageWidthInPixels = model.width * model.zoom;
@@ -31,32 +32,36 @@ class Overlay extends Component {
   }
 
   onMouseDown = (e) => {
-    if (this.state.mode !== 'MOVE' && this.props.model.isactive) {
+    if (this.handleMouseForAnnotation()) {
       e.stopPropagation();
       this.props.dispatch({ type: 'PRESS', ...this.calculateCoords(e) });
     }
   };
 
   onMouseMove = (e) => {
-    if (this.state.mode !== 'MOVE' && this.props.model.isactive) {
+    if (this.handleMouseForAnnotation()) {
       e.stopPropagation();
       this.props.dispatch({ type: 'MOVE', ...this.calculateCoords(e) });
     }
   };
 
   onMouseUp = (e) => {
-    if (this.state.mode !== 'MOVE' && this.props.model.isactive) {
+    if (this.handleMouseForAnnotation()) {
       e.stopPropagation();
       this.props.dispatch({ type: 'RELEASE' });
     }
   };
 
   onMouseLeave = (e) => {
-    if (this.state.mode !== 'MOVE' && this.props.model.isactive) {
+    if (this.handleMouseForAnnotation()) {
       e.stopPropagation();
       this.props.dispatch({ type: 'LEAVE_CANVAS' });
     }
   };
+
+  handleMouseForAnnotation() {
+    return this.state.mode !== 'MOVE' && this.props.model.isactive;
+  }
 
   calculateCoords(e) {
     const rect = this.base.getBoundingClientRect();
