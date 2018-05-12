@@ -1,9 +1,14 @@
 import { extend, Button, ControlAnchor } from 'OpenSeadragon';
 
-import drawGroupHover from '../../img/draw_grouphover.png';
-import drawHover from '../../img/draw_hover.png';
-import drawPressed from '../../img/draw_pressed.png';
-import drawRest from '../../img/draw_rest.png';
+import drawlineGroupHover from '../../img/draw_grouphover.png';
+import drawlineHover from '../../img/draw_hover.png';
+import drawlinePressed from '../../img/draw_pressed.png';
+import drawlineRest from '../../img/draw_rest.png';
+
+import drawfreeGroupHover from '../../img/path_grouphover.png';
+import drawfreeHover from '../../img/path_hover.png';
+import drawfreePressed from '../../img/path_pressed.png';
+import drawfreeRest from '../../img/path_rest.png';
 
 import moveGroupHover from '../../img/move_grouphover.png';
 import moveHover from '../../img/move_hover.png';
@@ -20,10 +25,15 @@ export class Control {
       onClick: (e) => { this.onClick(e); },
     }, options));
     this.viewer.addControl(this.btn.element, {
-      anchor: ControlAnchor.BOTTOM_LEFT,
+      anchor: ControlAnchor.TOP_LEFT,
     });
     if (this.model.mode === this.mode) {
       this.activate();
+    }
+    if (this.model.controlsactive) {
+      this.btn.enable();
+    } else {
+      this.btn.disable();
     }
     this.model.addHandler('CHANGE_EVENT', () => {
       if (this.model.mode === this.mode) {
@@ -50,19 +60,31 @@ export class Control {
   }
 }
 
-export class DrawControl extends Control {
+export class DrawLineControl extends Control {
   constructor(options) {
     super({
-      Tooltip: 'Draw',
-      srcRest: drawRest,
-      srcGroup: drawGroupHover,
-      srcHover: drawHover,
-      srcDown: drawPressed,
+      Tooltip: 'LineDraw',
+      srcRest: drawlineRest,
+      srcGroup: drawlineGroupHover,
+      srcHover: drawlineHover,
+      srcDown: drawlinePressed,
       ...options,
     });
   }
 }
 
+export class DrawFreeControl extends Control {
+  constructor(options) {
+    super({
+      Tooltip: 'FreeDraw',
+      srcRest: drawfreeRest,
+      srcGroup: drawfreeGroupHover,
+      srcHover: drawfreeHover,
+      srcDown: drawfreePressed,
+      ...options,
+    });
+  }
+}
 export class MoveControl extends Control {
   constructor(options) {
     super({

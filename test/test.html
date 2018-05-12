@@ -5,8 +5,8 @@
     <h3>Test page for openseadragon-annotations</h3>
     <div>
         <em>annotationtype:</em>
-        <input type="radio" name="type" value="LINE">Line
-        <input type="radio" name="type" value="PATH">Path<br>
+        <input type="radio" name="type" value="LINEDRAW">LineDraw
+        <input type="radio" name="type" value="FREEDRAW">FreeDraw<br>
     </div>
     <hr>
     <div>
@@ -42,13 +42,13 @@
 </body>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script type="text/javascript" src="../dist/openseadragon.js"></script>
+<script type="text/javascript" src="../node_modules/openseadragon/build/openseadragon/openseadragon.js"></script>
 <script type="text/javascript" src="../dist/openseadragon-annotations.js"></script>
 <script type="text/javascript" >
 $(document).ready(function() {
     const viewer = OpenSeadragon({
         id: 'viewer',
-        prefixUrl: "../dist/img/",
+        prefixUrl: "../node_modules/openseadragon/build/openseadragon/images/",
         showNavigator:  true,
         tileSources: {
             Image: {
@@ -76,16 +76,16 @@ $(document).ready(function() {
         var prop =$(this).attr('name')
         switch (prop) {
             case 'type':
-                annotations.model.annotationtype = option;
+                annotations.setMode(option);
             break;
             case 'color':
-                annotations.model.annotationcolor = option;
+                annotations.setAnnotationColor(option);
             break;
             case 'linewidth':
-                annotations.model.annotationlinewidth = option;
+                annotations.setAnnotationLineWidth(option);
             break;
             case 'name':
-                annotations.model.annotationname = option;
+                annotations.setAnnotationName(option);
             break;
         };
     });
@@ -94,7 +94,7 @@ $(document).ready(function() {
         var prop =$(this).attr('name')
         switch (prop) {
             case 'active':
-                annotations.setEnable(option);
+                annotations.EnableControls(option);
             break;
         };
     });

@@ -1,14 +1,13 @@
 import { Rect } from 'OpenSeadragon';
 import { h, render } from 'preact';
 import Overlay from './views/Overlay';
-import { DrawControl, MoveControl } from './views/Controls';
+import { DrawLineControl, DrawFreeControl, MoveControl } from './views/Controls';
 import createDispatcher from './model/createDispatcher';
 import generalActions from './model/generalActions';
 import createModel from './model/createModel';
 
 const annotationsPrototype = {
   onOpen() {
-    this.model.isactive = true;
     this.overlay = render(h(Overlay, { dispatch: this.dispatch, model: this.model }));
     const homeBounds = this.viewer.world.getHomeBounds();
     this.viewer.addOverlay(this.overlay, new Rect(0, 0, homeBounds.width, homeBounds.height));
@@ -17,7 +16,8 @@ const annotationsPrototype = {
     this.dispatch({ type: 'INITIALIZE', zoom, width, height });
     this.controls = [
       new MoveControl({ dispatch: this.dispatch, model: this.model, viewer: this.viewer }),
-      new DrawControl({ dispatch: this.dispatch, model: this.model, viewer: this.viewer }),
+      new DrawLineControl({ dispatch: this.dispatch, model: this.model, viewer: this.viewer }),
+      new DrawFreeControl({ dispatch: this.dispatch, model: this.model, viewer: this.viewer }),
     ];
   },
 
@@ -42,20 +42,34 @@ const annotationsPrototype = {
   },
 
   setMode(mode) {
-    this.dispatch({ type: 'MODE_UPDATE', mode });
+    this.controls[0].dispatch({ type: 'MODE_UPDATE', mode });
+  },
+
+  setAnnotationColor(color) {
+    this.model.annotationcolor = color;
+  },
+
+  setAnnotationLineWidth(linewidth) {
+    this.model.annotationlinewidth = linewidth;
+  },
+
+  setAnnotationName(name) {
+    this.model.annotationname = name;
   },
 
   getStatus() {
     return { active: !!this.overlay };
   },
 
-  setEnable(active) {
-    this.model.isactive = !!active;
-    for (let index = 0; index < this.controls.length; index += 1) {
-      if (this.model.isactive) {
-        this.controls[index].btn.enable();
-      } else {
-        this.controls[index].btn.disable();
+  EnableControls(active) {
+    this.model.controlsactive = !!active;
+    if (this.controls) {
+      for (let index = 0; index < this.controls.length; index += 1) {
+        if (this.model.controlsactive) {
+          this.controls[index].btn.enable();
+        } else {
+          this.controls[index].btn.disable();
+        }
       }
     }
   },

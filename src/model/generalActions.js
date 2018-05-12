@@ -13,7 +13,7 @@ const reactToGeneralAction = (model) =>
         break;
 
       case 'PRESS':
-        if (model.mode === 'DRAW' && model.isactive) {
+        if ((model.mode === 'LINEDRAW' || model.mode === 'FREEDRAW') && model.controlsactive) {
           // Remove existing annotation if it has same non-empty name
           if (model.annotationname !== '') {
             const i = model.getAnnotationsIdxByName(model.annotationname);
@@ -22,8 +22,8 @@ const reactToGeneralAction = (model) =>
             }
           }
           model.activityInProgress = true;
-          switch (model.annotationtype) {
-            case 'LINE':
+          switch (model.mode) {
+            case 'LINEDRAW':
               model.annotations.push([
                 'line',
                 {
@@ -37,7 +37,7 @@ const reactToGeneralAction = (model) =>
                 }, `${model.annotationname}`,
               ]);
               break;
-            case 'PATH':
+            case 'FREEDRAW':
               model.annotations.push([
                 'path',
                 {
@@ -59,14 +59,14 @@ const reactToGeneralAction = (model) =>
 
       case 'LEAVE_CANVAS':
       case 'RELEASE':
-        if (model.mode === 'DRAW' && model.activityInProgress === true) {
+        if ((model.mode === 'LINEDRAW' || model.mode === 'FREEDRAW') && model.activityInProgress === true) {
           model.raiseEvent('ANNOTATIONRELEASE_EVENT', model.annotations[model.annotations.length - 1]);
           model.activityInProgress = false;
         }
         break;
 
       case 'MOVE':
-        if (model.mode === 'DRAW' && model.activityInProgress === true) {
+        if ((model.mode === 'LINEDRAW' || model.mode === 'FREEDRAW') && model.activityInProgress === true) {
           const lastAnnotation = model.annotations[model.annotations.length - 1];
           if (lastAnnotation && lastAnnotation[0] === 'path') {
             lastAnnotation[1].d += ` L${action.x} ${action.y}`;

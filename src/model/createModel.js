@@ -9,11 +9,11 @@ export default () =>
     height: 0,
     activityInProgress: false,
     annotations: [],
-    annotationtype: 'LINE',
     annotationcolor: 'green',
     annotationlinewidth: 3,
     annotationname: '',
-
+    controlsactive: true,
+    
     getAnnotationsIdxByName(annotationname) {
       let i = 0;
       while (i < this.annotations.length) {

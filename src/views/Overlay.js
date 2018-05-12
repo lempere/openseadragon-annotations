@@ -60,7 +60,7 @@ class Overlay extends Component {
   };
 
   handleMouseForAnnotation() {
-    return this.state.mode !== 'MOVE' && this.props.model.isactive;
+    return this.state.mode !== 'MOVE' && this.props.model.controlsactive;
   }
 
   calculateCoords(e) {
