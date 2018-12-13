@@ -85,6 +85,19 @@ export class DrawFreeControl extends Control {
     });
   }
 }
+
+export class DrawSquareControl extends Control {
+  constructor(options) {
+    super({
+      Tooltip: 'SquareDraw',
+      srcRest: drawlineRest,
+      srcGroup: drawfreeGroupHover,
+      srcHover: drawfreeHover,
+      srcDown: drawfreePressed,
+      ...options,
+    });
+  }
+}
 export class MoveControl extends Control {
   constructor(options) {
     super({
