@@ -13,7 +13,8 @@ export default () =>
     annotationlinewidth: 3,
     annotationname: '',
     controlsactive: true,
-    
+    infographics: [],
+
     getAnnotationsIdxByName(annotationname) {
       let i = 0;
       while (i < this.annotations.length) {
@@ -31,5 +32,18 @@ export default () =>
         return (this.annotations[i]);
       }
       return (null);
+    },
+    getObjectHit(action) {
+      return this.annotations.filter((obj) => {
+        if (obj[0] === 'rect') {
+          const vx = action.x - obj[1].x;
+          const vy = action.y - obj[1].y;
+          if (vx > 0 && vy > 0 &&
+            vx < obj[1].width && vy < obj[1].height) {
+            return obj;
+          }
+        }
+        return null;
+      });
     },
   });

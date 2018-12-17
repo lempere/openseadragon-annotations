@@ -1,5 +1,5 @@
-const reactToGeneralAction = (model) =>
-  (action) => {
+const reactToGeneralAction = (model) => {
+  return (action) => {
     switch (action.type) {
       case 'MODE_UPDATE':
         model.activityInProgress = false;
@@ -69,6 +69,35 @@ const reactToGeneralAction = (model) =>
             default:
               break;
           }
+        } else {
+          const objHit = model.getObjectHit(action);
+          console.log('Get hit to object ', objHit);
+          if (objHit && objHit.length > 0) {
+            const obj = objHit[0][1];
+            const selectedSquare = [
+              'rect',
+              {
+                x: `${parseFloat(obj.x) - 1.4}`,
+                y: `${parseFloat(obj.y) - 1.4}`,
+                width: `${parseFloat(obj.width) + 2.8}`,
+                height: `${parseFloat(obj.height) + 2.8}`,
+                fill: 'none',
+                stroke: `red`,
+                'stroke-width': `${model.annotationlinewidth}`,
+                'stroke-linejoin': 'round',
+                'stroke-linecap': 'round',
+                'vector-effect': 'non-scaling-stroke',
+              }, `${model.annotationname}`,
+            ];
+            model.infographics[0] = selectedSquare;
+            model.selected = {
+              toMove: [obj, selectedSquare[1]],
+              start: action,
+            };
+          } else {
+            model.infographics = [];
+            model.selected = null;
+          }
         }
         break;
 
@@ -78,6 +107,9 @@ const reactToGeneralAction = (model) =>
           model.raiseEvent('ANNOTATIONRELEASE_EVENT', model.annotations[model.annotations.length - 1]);
           model.activityInProgress = false;
           model.annotations.splice(model.annotations.length - 2, 1);
+        }
+        if (model.mode === 'POINTERDIMENSIONS' && model.selected) {
+          model.selected = null;
         }
         break;
 
@@ -113,6 +145,23 @@ const reactToGeneralAction = (model) =>
             lastAnnotation[1].height = `${height}`;
           }
         }
+        if (model.mode === 'POINTERDIMENSIONS') {
+          // console.log('move pointer dimensions ', model.mode);
+          if (model.selected) {
+            const dx = action.x - model.selected.start.x;
+            const dy = action.y - model.selected.start.y;
+            model.selected.toMove.forEach((obj, n) => {
+              console.log('move ', n, obj);
+
+              obj.x = parseFloat(obj.x) + dx;
+              obj.y = parseFloat(obj.y) + dy;
+              // obj.width = parseFloat(obj.width) + dx;
+              // obj.height = parseFloat(obj.height) + dy;
+            });
+            model.selected.start = action;
+          }
+        }
+
         break;
 
       case 'ANNOTATIONS_RESET':
@@ -136,5 +185,6 @@ const reactToGeneralAction = (model) =>
 
     model.raiseEvent('CHANGE_EVENT');
   };
+};
 
 export default reactToGeneralAction;

@@ -1,7 +1,13 @@
 import { Rect } from 'OpenSeadragon';
 import { h, render } from 'preact';
 import Overlay from './views/Overlay';
-import { DrawLineControl, DrawFreeControl, MoveControl, DrawSquareControl } from './views/Controls';
+import {
+  DrawLineControl,
+  DrawFreeControl,
+  MoveControl,
+  DrawSquareControl,
+  PointerDimensionsControl
+} from './views/Controls';
 import createDispatcher from './model/createDispatcher';
 import generalActions from './model/generalActions';
 import createModel from './model/createModel';
@@ -19,6 +25,7 @@ const annotationsPrototype = {
       new DrawLineControl({ dispatch: this.dispatch, model: this.model, viewer: this.viewer }),
       new DrawFreeControl({ dispatch: this.dispatch, model: this.model, viewer: this.viewer }),
       new DrawSquareControl({ dispatch: this.dispatch, model: this.model, viewer: this.viewer }),
+      new PointerDimensionsControl({ dispatch: this.dispatch, model: this.model, viewer: this.viewer }),
     ];
   },
 

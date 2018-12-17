@@ -98,6 +98,18 @@ export class DrawSquareControl extends Control {
     });
   }
 }
+export class PointerDimensionsControl extends Control {
+  constructor(options) {
+    super({
+      Tooltip: 'PointerDimensions',
+      srcRest: moveRest,
+      srcGroup: drawfreeGroupHover,
+      srcHover: drawfreeHover,
+      srcDown: drawfreePressed,
+      ...options,
+    });
+  }
+}
 export class MoveControl extends Control {
   constructor(options) {
     super({

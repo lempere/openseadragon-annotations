@@ -95,6 +95,7 @@ class Overlay extends Component {
         onPointerUp: onMouseUp,
       },
       this.state.annotations.map((el) => this.renderElement(el, this.state)),
+      this.state.infographics.map((el) => this.renderElement(el, this.state)),
     );
   }
 }
