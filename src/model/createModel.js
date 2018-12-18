@@ -33,8 +33,8 @@ export default () =>
       }
       return (null);
     },
-    getObjectHit(action) {
-      return this.annotations.filter((obj) => {
+    getObjectHit(action, models = this.annotations) {
+      return models.filter((obj) => {
         if (obj[0] === 'rect') {
           const vx = action.x - obj[1].x;
           const vy = action.y - obj[1].y;

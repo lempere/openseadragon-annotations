@@ -70,33 +70,121 @@ const reactToGeneralAction = (model) => {
               break;
           }
         } else {
-          const objHit = model.getObjectHit(action);
-          console.log('Get hit to object ', objHit);
-          if (objHit && objHit.length > 0) {
-            const obj = objHit[0][1];
-            const selectedSquare = [
-              'rect',
-              {
-                x: `${parseFloat(obj.x) - 1.4}`,
-                y: `${parseFloat(obj.y) - 1.4}`,
-                width: `${parseFloat(obj.width) + 2.8}`,
-                height: `${parseFloat(obj.height) + 2.8}`,
-                fill: 'none',
-                stroke: `red`,
-                'stroke-width': `${model.annotationlinewidth}`,
-                'stroke-linejoin': 'round',
-                'stroke-linecap': 'round',
-                'vector-effect': 'non-scaling-stroke',
-              }, `${model.annotationname}`,
-            ];
-            model.infographics[0] = selectedSquare;
-            model.selected = {
-              toMove: [obj, selectedSquare[1]],
-              start: action,
-            };
+          const infographicHit = model.getObjectHit(action, model.infographics);
+          console.log('Get infographic hit ', infographicHit);
+
+          if (infographicHit.length > 1) {
+            const type = infographicHit.filter(x => x[2] === 'info');
+            console.log('resize typs', model.selected, type);
+            const dx = action.x - model.selected.start.x;
+            const dy = action.y - model.selected.start.y;
+            model.selected.resize = type[0][3];
+
+            // switch (type[0][2]) {
+            //   case 'resize-right-up':
+            //     model.selected.width = parseFloat(model.selected.width) + dx;
+            //     model.selected.start = action;
+            //     break;
+            //   default:
+            //     break;
+            // }
           } else {
-            model.infographics = [];
-            model.selected = null;
+            const objHit = model.getObjectHit(action);
+            console.log('Get hit to object ', objHit);
+            if (objHit && objHit.length > 0) {
+              const obj = objHit[0][1];
+              const x = parseFloat(obj.x);
+              const y = parseFloat(obj.y);
+              const width = parseFloat(obj.width);
+              const height = parseFloat(obj.height);
+
+              const selectedSquare = [
+                'rect',
+                {
+                  x: `${parseFloat(obj.x) - 1.4}`,
+                  y: `${parseFloat(obj.y) - 1.4}`,
+                  width: `${parseFloat(obj.width) + 2.8}`,
+                  height: `${parseFloat(obj.height) + 2.8}`,
+                  fill: 'none',
+                  stroke: `red`,
+                  'stroke-width': `${model.annotationlinewidth}`,
+                  'stroke-linejoin': 'round',
+                  'stroke-linecap': 'round',
+                  'vector-effect': 'non-scaling-stroke',
+                }, `${model.annotationname}`,
+              ];
+              model.infographics[0] = selectedSquare;
+              model.infographics[1] = [
+                'rect',
+                {
+                  x: `${x + width - 1}`,
+                  y: `${y - 1}`,
+                  width: `${2}`,
+                  height: `${2}`,
+                  fill: 'white',
+                  stroke: `white`,
+                  'stroke-width': `${model.annotationlinewidth}`,
+                  'stroke-linejoin': 'round',
+                  'stroke-linecap': 'round',
+                  'vector-effect': 'non-scaling-stroke',
+                }, 'info', 'resize-right-up',
+              ]
+              model.infographics[2] = [
+                'rect',
+                {
+                  x: `${x + width - 1}`,
+                  y: `${y + height - 1}`,
+                  width: `${2}`,
+                  height: `${2}`,
+                  fill: 'white',
+                  stroke: `white`,
+                  'stroke-width': `${model.annotationlinewidth}`,
+                  'stroke-linejoin': 'round',
+                  'stroke-linecap': 'round',
+                  'vector-effect': 'non-scaling-stroke',
+                }, 'info', 'resize-right-down',
+              ]
+              model.infographics[3] = [
+                'rect',
+                {
+                  x: `${x - 1}`,
+                  y: `${y + height - 1}`,
+                  width: `${2}`,
+                  height: `${2}`,
+                  fill: 'white',
+                  stroke: `white`,
+                  'stroke-width': `${model.annotationlinewidth}`,
+                  'stroke-linejoin': 'round',
+                  'stroke-linecap': 'round',
+                  'vector-effect': 'non-scaling-stroke',
+                }, 'info', 'resize-left-down',
+              ]
+              model.infographics[4] = [
+                'rect',
+                {
+                  x: `${x - 1}`,
+                  y: `${y - 1}`,
+                  width: `${2}`,
+                  height: `${2}`,
+                  fill: 'white',
+                  stroke: `white`,
+                  'stroke-width': `${model.annotationlinewidth}`,
+                  'stroke-linejoin': 'round',
+                  'stroke-linecap': 'round',
+                  'vector-effect': 'non-scaling-stroke',
+                }, 'info', 'resize-left-up',
+              ]
+              model.selected = {
+                toMove: [obj, selectedSquare[1],
+                  model.infographics[1][1], model.infographics[2][1],
+                  model.infographics[3][1], model.infographics[4][1]],
+                start: action,
+                state: 'move',
+              };
+            } else {
+              model.infographics = [];
+              model.selected = null;
+            }
           }
         }
         break;
@@ -109,7 +197,9 @@ const reactToGeneralAction = (model) => {
           model.annotations.splice(model.annotations.length - 2, 1);
         }
         if (model.mode === 'POINTERDIMENSIONS' && model.selected) {
-          model.selected = null;
+          console.log("selected release")
+          model.selected.state = 'release';
+          model.selected.resize = null;
         }
         break;
 
@@ -150,14 +240,51 @@ const reactToGeneralAction = (model) => {
           if (model.selected) {
             const dx = action.x - model.selected.start.x;
             const dy = action.y - model.selected.start.y;
-            model.selected.toMove.forEach((obj, n) => {
-              console.log('move ', n, obj);
+            if (model.selected.resize) {
+              console.log('move resize ', model.selected.resize)
 
-              obj.x = parseFloat(obj.x) + dx;
-              obj.y = parseFloat(obj.y) + dy;
-              // obj.width = parseFloat(obj.width) + dx;
-              // obj.height = parseFloat(obj.height) + dy;
-            });
+              const x = parseFloat(model.selected.toMove[0].x);
+              const y = parseFloat(model.selected.toMove[0].y);
+              const height = parseFloat(model.selected.toMove[0].height);
+              const width = parseFloat(model.selected.toMove[0].width);
+              switch (model.selected.resize) {
+                case 'resize-right-up':
+                  // console.log('point ', dy, y, height);
+                  model.selected.toMove[0].width = width + dx;
+                  model.selected.toMove[0].y = y + dy;
+                  model.selected.toMove[0].height = height - dy;
+                  // model.selected.toMove.filter((i, n) => n < 3).forEach(obj => {
+                  //   obj.width = parseFloat(obj.width) + dx;
+                  //   obj.y = parseFloat(obj.y) + dy;
+                  //   obj.height = parseFloat(obj.height) - dy;
+                  })
+                  break;
+                case 'resize-right-down':
+                  model.selected.toMove[0].width = width + dx;
+                  model.selected.toMove[0].height = height + dy;
+                  break;
+                case 'resize-left-down':
+                  model.selected.toMove[0].x = x + dx;
+                  // model.selected.toMove[0].y = y + dy;
+                  model.selected.toMove[0].width = width - dx;
+                  model.selected.toMove[0].height = height + dy;
+                  break;
+                case 'resize-left-up':
+                  model.selected.toMove[0].x = x + dx;
+                  model.selected.toMove[0].y = y + dy;
+                  model.selected.toMove[0].height = height - dy;
+                  model.selected.toMove[0].width = width - dx;
+                  break;
+                default:
+                  break;
+              }
+            } else if (model.selected.state === 'move') {
+              model.selected.toMove.forEach((obj, n) => {
+                console.log('move ', n, obj);
+                obj.x = parseFloat(obj.x) + dx;
+                obj.y = parseFloat(obj.y) + dy;
+              });
+            }
             model.selected.start = action;
           }
         }
