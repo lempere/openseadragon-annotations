@@ -71,11 +71,9 @@ const reactToGeneralAction = (model) => {
           }
         } else {
           const infographicHit = model.getObjectHit(action, model.infographics);
-          console.log('Get infographic hit ', infographicHit);
 
           if (infographicHit.length > 1) {
             const type = infographicHit.filter(x => x[2] === 'info');
-            console.log('resize typs', model.selected, type);
             const dx = action.x - model.selected.start.x;
             const dy = action.y - model.selected.start.y;
             model.selected.resize = type[0][3];
@@ -90,7 +88,6 @@ const reactToGeneralAction = (model) => {
             // }
           } else {
             const objHit = model.getObjectHit(action);
-            console.log('Get hit to object ', objHit);
             if (objHit && objHit.length > 0) {
               const obj = objHit[0][1];
               const x = parseFloat(obj.x);
@@ -197,7 +194,6 @@ const reactToGeneralAction = (model) => {
           model.annotations.splice(model.annotations.length - 2, 1);
         }
         if (model.mode === 'POINTERDIMENSIONS' && model.selected) {
-          console.log("selected release")
           model.selected.state = 'release';
           model.selected.resize = null;
         }
@@ -236,51 +232,79 @@ const reactToGeneralAction = (model) => {
           }
         }
         if (model.mode === 'POINTERDIMENSIONS') {
-          // console.log('move pointer dimensions ', model.mode);
           if (model.selected) {
             const dx = action.x - model.selected.start.x;
             const dy = action.y - model.selected.start.y;
             if (model.selected.resize) {
-              console.log('move resize ', model.selected.resize)
 
-              const x = parseFloat(model.selected.toMove[0].x);
-              const y = parseFloat(model.selected.toMove[0].y);
-              const height = parseFloat(model.selected.toMove[0].height);
-              const width = parseFloat(model.selected.toMove[0].width);
+              const maxX = parseFloat(model.selected.toMove[2].x + dx);
+              const minX = parseFloat(model.selected.toMove[5].x + dx);
+              const minY = parseFloat(model.selected.toMove[2].y + dy);
+              const maxY = parseFloat(model.selected.toMove[3].y + dy);
+              if (maxX - minX < 2 || maxY - minY < 2) {
+                if (maxX - minX < 2) {
+                  model.selected.toMove[0].width = 2.1;
+                  model.selected.toMove[1].width = 4.1;
+                } else {
+                  model.selected.toMove[0].height = 2.1;
+                  model.selected.toMove[0].height = 4.1;
+                }
+                // model.selected.state = 'release';
+                // model.selected.resize = null;
+                model.selected = null;
+                return;
+              }
               switch (model.selected.resize) {
                 case 'resize-right-up':
-                  // console.log('point ', dy, y, height);
-                  model.selected.toMove[0].width = width + dx;
-                  model.selected.toMove[0].y = y + dy;
-                  model.selected.toMove[0].height = height - dy;
-                  // model.selected.toMove.filter((i, n) => n < 3).forEach(obj => {
-                  //   obj.width = parseFloat(obj.width) + dx;
-                  //   obj.y = parseFloat(obj.y) + dy;
-                  //   obj.height = parseFloat(obj.height) - dy;
-                  })
+                  model.selected.toMove[2].x = parseFloat(model.selected.toMove[2].x) + dx;
+                  model.selected.toMove[2].y = parseFloat(model.selected.toMove[2].y) + dy;
+                  model.selected.toMove[3].x = parseFloat(model.selected.toMove[3].x) + dx;
+                  model.selected.toMove[5].y = parseFloat(model.selected.toMove[5].y) + dy;
+
+                  model.selected.toMove.filter((i, n) => n < 2).forEach(obj => {
+                    obj.width = parseFloat(obj.width) + dx;
+                    obj.y = parseFloat(obj.y) + dy;
+                    obj.height = parseFloat(obj.height) - dy;
+                  });
                   break;
                 case 'resize-right-down':
-                  model.selected.toMove[0].width = width + dx;
-                  model.selected.toMove[0].height = height + dy;
+                  model.selected.toMove[3].x = parseFloat(model.selected.toMove[3].x) + dx;
+                  model.selected.toMove[3].y = parseFloat(model.selected.toMove[3].y) + dy;
+                  model.selected.toMove[2].x = parseFloat(model.selected.toMove[2].x) + dx;
+                  model.selected.toMove[4].y = parseFloat(model.selected.toMove[4].y) + dy;
+                  model.selected.toMove.filter((i, n) => n < 2).forEach(obj => {
+                    obj.width = parseFloat(obj.width) + dx;
+                    obj.height = parseFloat(obj.height) + dy;
+                  });
                   break;
                 case 'resize-left-down':
-                  model.selected.toMove[0].x = x + dx;
-                  // model.selected.toMove[0].y = y + dy;
-                  model.selected.toMove[0].width = width - dx;
-                  model.selected.toMove[0].height = height + dy;
+                  model.selected.toMove[4].x = parseFloat(model.selected.toMove[4].x) + dx;
+                  model.selected.toMove[4].y = parseFloat(model.selected.toMove[4].y) + dy;
+                  model.selected.toMove[5].x = parseFloat(model.selected.toMove[5].x) + dx;
+                  model.selected.toMove[3].y = parseFloat(model.selected.toMove[3].y) + dy;
+                  model.selected.toMove.filter((i, n) => n < 2).forEach(obj => {
+                    obj.x = parseFloat(obj.x) + dx;
+                    obj.width = parseFloat(obj.width) - dx;
+                    obj.height = parseFloat(obj.height) + dy;
+                  });
                   break;
                 case 'resize-left-up':
-                  model.selected.toMove[0].x = x + dx;
-                  model.selected.toMove[0].y = y + dy;
-                  model.selected.toMove[0].height = height - dy;
-                  model.selected.toMove[0].width = width - dx;
+                  model.selected.toMove[5].x = parseFloat(model.selected.toMove[5].x) + dx;
+                  model.selected.toMove[5].y = parseFloat(model.selected.toMove[5].y) + dy;
+                  model.selected.toMove[4].x = parseFloat(model.selected.toMove[4].x) + dx;
+                  model.selected.toMove[2].y = parseFloat(model.selected.toMove[2].y) + dy;
+                  model.selected.toMove.filter((i, n) => n < 2).forEach(obj => {
+                    obj.x = parseFloat(obj.x) + dx;
+                    obj.y = parseFloat(obj.y) + dy;
+                    obj.height = parseFloat(obj.height) - dy;
+                    obj.width = parseFloat(obj.width) - dx;
+                  });
                   break;
                 default:
                   break;
               }
             } else if (model.selected.state === 'move') {
               model.selected.toMove.forEach((obj, n) => {
-                console.log('move ', n, obj);
                 obj.x = parseFloat(obj.x) + dx;
                 obj.y = parseFloat(obj.y) + dy;
               });
