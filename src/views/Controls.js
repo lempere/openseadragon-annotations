@@ -21,6 +21,7 @@ export class Control {
     this.model = options.model;
     this.viewer = options.viewer;
     this.mode = options.Tooltip.toUpperCase();
+    options.tooltip = options.Tooltip
     this.btn = new Button(extend({
       onClick: (e) => { this.onClick(e); },
     }, options));

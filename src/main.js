@@ -11,6 +11,7 @@ import {
 import createDispatcher from './model/createDispatcher';
 import generalActions from './model/generalActions';
 import createModel from './model/createModel';
+import reactToKeyboardAction from './model/keyboardActions';
 
 const annotationsPrototype = {
   onOpen() {
@@ -120,6 +121,7 @@ export default ({ viewer }) => {
   const annotations = Object.create(annotationsPrototype);
   Object.assign(annotations, { viewer, model, dispatch });
   viewer.addHandler('open', () => annotations.onOpen());
+  viewer.addHandler('canvas-key', (event) => reactToKeyboardAction(model, event));
   viewer.addHandler('zoom', ({ zoom }) => annotations.dispatch({ type: 'ZOOM_UPDATE', zoom }));
   if (viewer.isOpen()) { annotations.onOpen(); }
   return annotations;
